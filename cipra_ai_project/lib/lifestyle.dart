@@ -17,15 +17,7 @@ class Lifestyle extends StatelessWidget {
               },
             ),
           ),
-        // automaticallyImplyLeading: false,
-        // leading: IconButton(
-        //   icon: Icon(
-        //     Icons.arrow_back,
-        //     color: Colors.black,
-        //   ),
-        //   onPressed: () {
-        //     Navigator.of(context).pop(); // Go back to the previous screen
-        //   },
+       
       
       ),
       body: SingleChildScrollView(
