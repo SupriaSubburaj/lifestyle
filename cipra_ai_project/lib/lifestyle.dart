@@ -8,20 +8,17 @@ class Lifestyle extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        // title: Text('App with Back Button'),
           leading: Center(
             child: IconButton(
-              icon: Icon(Icons.arrow_back,color: Colors.black,),
+              icon: const Icon(Icons.arrow_back,color: Colors.black,),
               onPressed: () {
                 Navigator.pop(context);
               },
             ),
-          ),
-       
-      
+          ),      
       ),
       body: SingleChildScrollView(
-        scrollDirection: Axis.vertical,
+        scrollDirection: Axis.vertical, //===Image is scrollable vertically ====//
         child: Padding(
           padding: const EdgeInsets.only(top: 20.0),
           child: SizedBox(
@@ -29,7 +26,7 @@ class Lifestyle extends StatelessWidget {
               'assets/images/recommendations.png',
               fit: BoxFit.cover,
               width: MediaQuery.of(context).size.width,
-              // height: 200,
+              
             ),
           ),
         ),

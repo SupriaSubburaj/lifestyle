@@ -24,8 +24,6 @@ class _LoginState extends State<Login> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-
-          // title: Text('Login'),
           ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -41,7 +39,7 @@ class _LoginState extends State<Login> {
                       Center(
                         child: SizedBox(
                           child: Image.asset(
-                            'assets/images/cipra_logo.jpg',
+                            'assets/images/cipra_logo.jpg', //===add Cipra logo from assets folder =====//
                             fit: BoxFit.cover,
                             width: 200,
                             height: 200,
@@ -105,7 +103,7 @@ class _LoginState extends State<Login> {
                       },
                     ),
                   ),
-                  //==========display error if there is any error message ========//
+                  //=====display error if there is any error message =====//
                   if (errorMessage.isNotEmpty)
                     Padding(
                       padding: const EdgeInsets.all(10.0),
@@ -124,7 +122,7 @@ class _LoginState extends State<Login> {
                   Center(
                       child: TextButton(
                     onPressed: () {
-                      if (_formKey.currentState!.validate()) {
+                      if (_formKey.currentState!.validate()) { //====validate the form and submit ====//
                         login();
                       }
                     },
@@ -155,6 +153,7 @@ class _LoginState extends State<Login> {
     );
   }
 
+//===== Login with credentials =====// 
   Future<void> login() async {
     setState(() {
       isLoading = true;
@@ -169,20 +168,20 @@ class _LoginState extends State<Login> {
     if (response == '') {
       setState(() {
         isLoading = false;
-        //  final provider = Provider.of<BackEndProvider>(context, listen: false);
         errorMessage = loginErrorMsg;
       });
     } else {
       setState(() {
         isLoading = false;
         errorMessage = '';
-         Navigator.push(
-          context, MaterialPageRoute(builder: (_) => const Lifestyle()));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (_) => const Lifestyle())); //--- Navigate to Screen2 after successfull login ----//
       });
     }
   }
 }
 
+//==== Get login response from cipra api =====//
 Future<String> _getResponse(String username, String password) async {
   try {
     final url = Uri.parse("https://api.cipra.ai:5000/takehome/signin")
