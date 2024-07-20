@@ -9,11 +9,17 @@ class BackEndProvider extends DisposableProvider {
   String getServerUrl() {
     return SERVER_URL;
   }
+
+   String loginErrorMsg = "";
   
   @override
   void disposeValues() {
     // TODO: implement disposeValues
   }
+  
+  //===Login api call====//
+  
+  
 }
 
 abstract class DisposableProvider with ChangeNotifier {
