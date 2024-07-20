@@ -19,6 +19,9 @@ class _LoginState extends State<Login> {
 //==== Boolean flag to track whether the login is in progress====//
   bool isLoading = false;
   String errorMessage = '';
+  
+  bool isUserNameFilled = false;
+  bool isPasswordFilled = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,16 +71,30 @@ class _LoginState extends State<Login> {
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20),
                         //===Get email input====//
-                        child: TextFormField(
-                          controller: usernameController,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(), labelText: 'Email'),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
-                            }
-                            return null;
-                          },
+                        child: Row(
+                          children: [
+                            Icon(Icons.person,color: isUserNameFilled ? Colors.black : Colors.grey,),
+                            const SizedBox(width: 10,),
+                            Expanded(
+                              child: TextFormField(
+                                controller: usernameController,
+                                onChanged: (value){
+                                  setState(() {
+                                    isUserNameFilled = value.isNotEmpty;
+                                  });
+                                },
+                                decoration: const InputDecoration(
+                                    border: OutlineInputBorder(), labelText: 'Email'),
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter your email';
+                                  }
+                                
+                                  return null;
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ],
@@ -88,19 +105,32 @@ class _LoginState extends State<Login> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20),
                     //===Get password input====//
-                    child: TextFormField(
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: const InputDecoration(
-                          border: OutlineInputBorder(),
-                          labelText: 'Enter Password',
-                          hintText: 'Enter secure password'),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter your password';
-                        }
-                        return null;
-                      },
+                    child: Row(
+                      children: [
+                        Icon(Icons.key,color: isPasswordFilled ? Colors.black : Colors.grey,),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: TextFormField(
+                            controller: passwordController,
+                            obscureText: true,
+                             onChanged: (value){
+                                  setState(() {
+                                    isPasswordFilled = value.isNotEmpty;
+                                  });
+                                },
+                            decoration: const InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Enter Password',
+                                hintText: 'Enter secure password'),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your password';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   //=====display error if there is any error message =====//
