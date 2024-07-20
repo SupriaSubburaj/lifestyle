@@ -1,3 +1,4 @@
+import 'package:cipra_ai_project/lifestyle.dart';
 import 'package:cipra_ai_project/provider/appprovider.dart';
 import 'package:flutter/material.dart';
 import "package:http/http.dart" as http;
@@ -176,6 +177,8 @@ class _LoginState extends State<Login> {
       setState(() {
         isLoading = false;
         errorMessage = '';
+         Navigator.push(
+          context, MaterialPageRoute(builder: (_) => const Lifestyle()));
       });
     }
   }
