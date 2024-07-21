@@ -11,6 +11,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.IOException;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -19,10 +21,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
+    private static final String TAG = "LoginActivity";
+    private static final String BASE_URL = "https://api.cipra.ai:5000/";
+
     private EditText emailEditText;
     private EditText passwordEditText;
-
-    private static final String BASE_URL = "https://api.cipra.ai:5000/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,16 +44,17 @@ public class LoginActivity extends AppCompatActivity {
 
                 // Input validation
                 if (email.isEmpty()) {
-                    Log.d("LoginActivity", "Email field is empty");
+                    Log.d(TAG, "Email field is empty");
                     Toast.makeText(LoginActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
                 if (password.isEmpty()) {
-                    Log.d("LoginActivity", "Password field is empty");
+                    Log.d(TAG, "Password field is empty");
                     Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
 
                 // Create Retrofit instance
                 Retrofit retrofit = new Retrofit.Builder()
@@ -58,23 +62,44 @@ public class LoginActivity extends AppCompatActivity {
                         .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
+
                 // Create ApiService instance
                 ApiService apiService = retrofit.create(ApiService.class);
 
                 // Make API call
                 Call<ApiResponse> call = apiService.login(email, password);
+                Log.d(TAG, "Request email: " + email + ", password: " + password);
+
                 call.enqueue(new Callback<ApiResponse>() {
                     @Override
                     public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
-                        Log.d("LoginActivity", "Response code: " + response.code());
+//                        // Log response details
+                        Log.d(TAG, "Response code: " + response.code());
+//                        Log.d(TAG, "Response message: " + response.message());
+//
+//                        if (response.body() != null) {
+//                            try {
+////                                Log.d(TAG, "Response body: " + response.body().toString());
+//                            } catch (Exception e) {
+//                                Log.e(TAG, "Error reading response body", e);
+//                            }
+//                        } else {
+//                            try {
+//                                Log.d(TAG, "Error body: " + (response.errorBody() != null ? response.errorBody().string() : "No error body"));
+//                            } catch (IOException e) {
+//                                Log.e(TAG, "Error reading error body", e);
+//                            }
+//                        }
+
+                        // Handle response
                         if (response.isSuccessful()) {
-                            Log.d("LoginActivity", "Successful login");
+                            Log.d(TAG, "Successful login");
                             ApiResponse apiResponse = response.body();
                             if (apiResponse != null && apiResponse.isSuccess()) {
-                                Log.d("LoginActivity", "Successful login");
-//                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-//                                startActivity(intent);
-//                                finish();
+                                Toast.makeText(LoginActivity.this, "Successful login", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
                             } else {
                                 Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
                             }
@@ -85,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(@NonNull Call<ApiResponse> call, @NonNull Throwable t) {
+                        Log.e(TAG, "Network error: " + t.getMessage(), t);
                         Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

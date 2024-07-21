@@ -1,5 +1,7 @@
 package com.example.cipraai;
 
+import androidx.annotation.NonNull;
+
 public class ApiResponse {
     private boolean success;
     private String message;
@@ -19,5 +21,13 @@ public class ApiResponse {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+    @NonNull
+    @Override
+    public String toString() {
+        return "ApiResponse{" +
+                "success=" + success +
+                ", message='" + message + '\'' +
+                '}';
     }
 }
