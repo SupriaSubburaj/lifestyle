@@ -6,6 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -18,14 +20,14 @@ public class LoginActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
 
-    private static final String BASE_URL = "https://api.cipra.ai:5000/takehome/signin";
+    private static final String BASE_URL = "https://api.cipra.ai:5000/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        emailEditText = findViewById(R.id.email);  // Assuming you have an email EditText
+        emailEditText = findViewById(R.id.email);
         passwordEditText = findViewById(R.id.password);
         Button loginButton = findViewById(R.id.login_button);
 
@@ -43,6 +45,7 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 if (password.isEmpty()) {
+                    Log.d("LoginActivity", "Password field is empty");
                     Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -60,8 +63,9 @@ public class LoginActivity extends AppCompatActivity {
                 Call<ApiResponse> call = apiService.login(email, password);
                 call.enqueue(new Callback<ApiResponse>() {
                     @Override
-                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                    public void onResponse(@NonNull Call<ApiResponse> call, @NonNull Response<ApiResponse> response) {
                         if (response.isSuccessful()) {
+                            Log.d("LoginActivity", "Successful login");
                             ApiResponse apiResponse = response.body();
                             if (apiResponse != null && apiResponse.isSuccess()) {
                                 Intent intent = new Intent(LoginActivity.this, MainActivity.class);
