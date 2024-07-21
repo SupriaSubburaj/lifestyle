@@ -1,5 +1,5 @@
 package com.example.cipraai;
-
+import android.util.Log;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -7,37 +7,79 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText usernameEditText;
+    private EditText emailEditText;
     private EditText passwordEditText;
-    private Button loginButton;
+
+    private static final String BASE_URL = "https://api.cipra.ai:5000/takehome/signin";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        usernameEditText = findViewById(R.id.username);
+        emailEditText = findViewById(R.id.email);  // Assuming you have an email EditText
         passwordEditText = findViewById(R.id.password);
-        loginButton = findViewById(R.id.login_button);
+        Button loginButton = findViewById(R.id.login_button);
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = usernameEditText.getText().toString();
+                String email = emailEditText.getText().toString();
                 String password = passwordEditText.getText().toString();
 
-                if (username.equals("admin") && password.equals("admin")) {
-                    // Login successful
-                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    // Login failed
-                    Toast.makeText(LoginActivity.this, "Invalid username or password", Toast.LENGTH_SHORT).show();
+                // Input validation
+                if (email.isEmpty()) {
+                    Log.d("LoginActivity", "Email field is empty");
+                    Toast.makeText(LoginActivity.this, "Please enter your email", Toast.LENGTH_SHORT).show();
+                    return;
                 }
+
+                if (password.isEmpty()) {
+                    Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Create Retrofit instance
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build();
+
+                // Create ApiService instance
+                ApiService apiService = retrofit.create(ApiService.class);
+
+                // Make API call
+                Call<ApiResponse> call = apiService.login(email, password);
+                call.enqueue(new Callback<ApiResponse>() {
+                    @Override
+                    public void onResponse(Call<ApiResponse> call, Response<ApiResponse> response) {
+                        if (response.isSuccessful()) {
+                            ApiResponse apiResponse = response.body();
+                            if (apiResponse != null && apiResponse.isSuccess()) {
+                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, "Invalid email or password", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(LoginActivity.this, "Login failed: " + response.message(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ApiResponse> call, Throwable t) {
+                        Toast.makeText(LoginActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
